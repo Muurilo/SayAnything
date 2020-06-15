@@ -1,27 +1,21 @@
 require("dotenv").config();
-var express = require('express');
-var helmet = require('helmet');
-var compression = require('compression');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var router = require('./src/routes');
+const express = require('express');
+const mongoose = require("mongoose")
+const helmet = require('helmet');
+const compression = require('compression');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const router = require('./src/routes');
 
-var knex = require("knex")({
-    client : 'mssql',
-    connection: {
-        server : process.env.MSSQL_SERVER,
-        user : process.env.MSSQL_USER,
-        password : process.env.MSSQL_PASS,
-        options: {
-            port: process.env.MSSQL_PORT,
-            database : process.env.MSSQL_DATABASE,
-            encrypt: true
-        }
-    }
-});
+const app = express();
 
-var app = express();
+mongoose.connect(process.env.MONGODB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+    .then(() => console.log('Connection to MongoDB successful'))
+    .catch((err) => console.error(err));
 
 app.use(logger('dev'));
 app.use(helmet())
@@ -31,6 +25,6 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(router);
+app.use('/api',router);
 
 module.exports = app;
