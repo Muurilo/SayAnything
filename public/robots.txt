@@ -1,0 +1,5 @@
+User-Agent: *
+Disallow: 
+Disallow: /say.html
+
+Sitemap: https://sayanything.me/sitemap.xml
